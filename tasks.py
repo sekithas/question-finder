@@ -14,10 +14,6 @@ finder_task = Task(
                         - Assign a score based on the scoring rules
                         5. Select the candidate with the highest score.
                     """,
-    expected_output = """Output ONLY the final answer in this format:
-                    (Year), (Month), (Subject), (Unit), (Certificate), (Examination Board)
-                Example:
-                    2019 June Physics Unit 2 IAL, Edexcel
-                    """,
+    expected_output = "ONLY output one line in this format: (Year), (Month), (Subject), (Unit), (Exam Board). No extra text.",
     agent = finder,
 )

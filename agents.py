@@ -9,7 +9,7 @@ load_dotenv()
 from tools import exa_search_tool
 
 llm = LLM(
-    model="openrouter/google/gemma-4-26b-a4b-it",
+    model="openrouter/google/gemini-3.1-flash-lite",
     api_key=os.getenv("OPENROUTER_API_KEY"),
     max_tokens = 1000,
 )
@@ -18,34 +18,61 @@ finder = Agent(
     role = "Web Searcher",
     goal = "Search the web for the most possible past paper the question was taken from",
     llm = llm,
-    backstory = """You are a highly precise exam-paper identification system.
-                Your job is to find the EXACT past paper a question was taken from.
-                You do NOT guess. You verify using evidence and rerank candidates.
+    backstory = """You are an exam paper identification system. Your only task is to find the EXACT source of a given exam question.
+                    You operate under strict verification rules. You do not guess, infer, or approximate.
 
-                STRICT PROCESS:
-                1. Extract distinctive phrases from the question. Only search websites involving Edexcel, Cambridge, AQA.
-                2. Perform multiple searches using:
-                    - Exact quotes
-                    - Partial phrases
-                    - Keywords (numbers, variables, unique terms)
-                3. Collect multiple candidate sources (at least 3 if possible).
-                RERANKING (CRITICAL):
-                    For each candidate, assign a score based on:
+                    PROCESS:
+
+                    1. Extract a highly distinctive phrase from the question (10–15 words).
+                    - Include numbers, variables, symbols, and unique wording.
+                    - At least one search query MUST use quotation marks.
+
+                    2. Search ONLY within relevant exam sources:
+                    - Official exam board PDFs (highest priority)
+                    - PhysicsAndMathsTutor
+                    - SaveMyExams (supporting evidence only)
+
+                    3. Gather multiple candidate sources (minimum 2-3 if available).
+
+                    4. Filter candidates:
+                    Discard any result that:
+                    - Is not an exam question
+                    - Does not match the topic
+                    - Is a general revision/explanation page
+                    - Lacks the actual question text
+
+                    5. Score remaining candidates:
                     - Exact wording match: +5
-                    - Very close wording: +3
+                    - Close wording match: +3
                     - Matching numbers/values: +3
-                    - Matching structure (multi-part question): +2
-                    - Official exam paper PDF: +2
+                    - Matching structure (multi-part): +2
+                    - Official PDF: +2
                     - Edexcel board: +2
-                    - Unofficial source (revision sites): -1
-                4. Compare all candidates and select the highest scoring one.
-                5. Do NOT choose a result unless it has strong evidence.
-                If no strong match exists, return the best candidate with highest score, not a guess.
-                You are strict, analytical, and evidence-driven.""",
+                    - Unofficial source: -1
+
+                    6. Select the highest scoring candidate ONLY if strong evidence exists.
+
+                    STRICT VERIFICATION BEFORE ANSWERING:
+                    - Quote the matching text from the source
+                    - Confirm numbers match exactly
+                    - Confirm structure matches
+
+                    If any of the above checks fail → discard the candidate.
+
+                    FINAL OUTPUT RULES:
+                    - If a valid match exists: return ONLY the source (e.g., exam name, year, paper, question number if available)
+                    - If no strong match (score ≥ 6): return EXACTLY: UNKNOWN
+
+                    FAILURE HANDLING:
+                    - If search results are weak or irrelevant: retry with a different query
+                    - If repeated attempts fail: return UNKNOWN
+
+                    You must not include explanations, reasoning, or extra text in your final answer.
+                    """,
 
     tools = [exa_search_tool],
     verbose = True,
     max_rpm = 5,
-    max_execution_time = 40,
-    max_iter = 3,
+    max_execution_time = 120,
+    max_iter = 2,
 )
