@@ -36,7 +36,7 @@ finder = Agent(
 
                     4. Filter candidates:
                     Discard any result that:
-                    - Is not an exam question
+                    - Is not an exam question   
                     - Does not match the topic
                     - Is a general revision/explanation page
                     - Lacks the actual question text
