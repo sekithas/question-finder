@@ -44,3 +44,4 @@ question-finder/
 
 ## Extra Note
  - You will have to install tesseract via homebrew into your computer. Failure to do so will give you TesseractNotFound error.
+ - For windows line 4 in `vision.py` should be changed to `pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'`
