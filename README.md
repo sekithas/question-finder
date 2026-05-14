@@ -18,7 +18,7 @@ question-finder/
 ├── static/
 │   ├── styles.css
 │   └── js/
-|       |__scripts.js
+│       └── scripts.js
 └── templates/
     └── index.html
 ```
