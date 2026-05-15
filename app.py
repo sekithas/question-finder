@@ -43,9 +43,14 @@ def upload():
         max_rpm = 30,
     )
 
-    result = questionFinder.kickoff(inputs = {"question_text": questionText})
+    try:
+        result = questionFinder.kickoff(inputs = {"question_text": questionText})
 
-    return jsonify({'success': True, 'filename': filename, 'year': str(result)})
+        return jsonify({'success': True, 'filename': filename, 'year': str(result)})
+    
+    except Exception as e:
+        
+        return jsonify({'error' : True})
 
 if __name__ == '__main__':
     app.run(debug=True)
