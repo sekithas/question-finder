@@ -11,7 +11,7 @@ from tools import exa_search_tool
 llm = LLM(
     model="openrouter/google/gemini-3.1-flash-lite",
     api_key=os.getenv("OPENROUTER_API_KEY"),
-    max_tokens = 1000,
+    max_tokens = 100,
 )
 
 finder = Agent(
@@ -23,9 +23,7 @@ finder = Agent(
                 PROCESS:
                 1. Extract a distinctive 10-15 word phrase including numbers and variables.
                 2. Search for ONLY EDEXCEL PAPERS using PhysicsAndMathsTutor, official exam PDFs, SaveMyExams.
-                3. Score candidates: exact wording match +5, close match +3, matching numbers +3, matching structure +2, official PDF +2, Edexcel +2, unofficial -1.
-                4. Only accept a match if score >= 6 AND wording/numbers/structure all verify.
-                5. If no match: return UNKNOWN. No explanations. No guessing.
+                3. If match, return exact past paper. If no match: return UNKNOWN. No explanations. No guessing.
                 """,
 
     tools = [exa_search_tool],
