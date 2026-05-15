@@ -76,7 +76,7 @@ submitBtn.addEventListener('click', async () => {
     if (data.success) {
       setStatus(`Found: ${data.year}`);
     } else {
-      setStatus(data.error || 'Upload failed.', true);
+      setStatus('Something went wrong.', true);
       submitBtn.disabled = false;
     }
   } catch {
